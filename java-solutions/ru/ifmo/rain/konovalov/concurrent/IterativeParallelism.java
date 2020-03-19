@@ -63,9 +63,9 @@ public class IterativeParallelism implements ScalarIP {
         List<Thread> threadList = IntStream.range(0, threads)
                 .mapToObj(i -> {
                             if (i != threads - 1) {
-                                return values.subList(i * part + Math.min(values.size() % threads, i), (i + 1) * part + Math.min(values.size() % threads, i + 1));
+                                return values.subList(i * part, (i + 1) * part);
                             }
-                            return values.subList(i * part + Math.min(values.size() % threads, i), values.size());
+                            return values.subList(i * part, values.size());
                         }
                 )
                 .map(List::spliterator)

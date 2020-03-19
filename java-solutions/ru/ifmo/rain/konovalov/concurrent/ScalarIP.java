@@ -1,4 +1,4 @@
-package info.kgeorgiy.java.advanced.concurrent;
+package ru.ifmo.rain.konovalov.concurrent;
 
 import java.util.Comparator;
 import java.util.List;

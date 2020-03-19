@@ -2,6 +2,7 @@ package ru.ifmo.rain.konovalov.concurrent;
 
 import info.kgeorgiy.java.advanced.concurrent.ScalarIP;
 
+import javafx.util.Pair;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -51,6 +52,15 @@ public class ConcurrentE implements ScalarIP {
         }
     }
 
+    public static void main(String[] args) {
+        ConcurrentE concurrentE = new ConcurrentE();
+        try {
+            System.out.println(concurrentE.maximum(5, List.of(1,2,3,4,5,6,7,8,9,0,1,2), Integer::compareTo));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private <T, R> void start(int threads,
                               List<? extends T> values,
                               Function<Spliterator<? extends T>, R> init,
@@ -60,13 +70,13 @@ public class ConcurrentE implements ScalarIP {
         if (threads <= 0)
             throw new IllegalArgumentException("threads can't be less than or equal to zero");
 
-        int part = values.size() / threads + 1;
+        int part = values.size() / threads;
         List<Thread> threadList = IntStream.range(0, threads)
                 .mapToObj(i -> {
                             if (i != threads - 1) {
-                                return values.subList(i * part, (i + 1) * part);
+                                return values.subList(i * part + Math.min(values.size() % threads, i), (i + 1) * part + Math.min(values.size() % threads, i + 1));
                             }
-                            return values.subList(i * part, values.size());
+                            return values.subList(i * part + Math.min(values.size() % threads, i), values.size());
                         }
                 )
                 .map(List::spliterator)

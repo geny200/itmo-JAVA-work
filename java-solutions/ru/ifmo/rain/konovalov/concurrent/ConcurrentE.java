@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
  *
  * @author Geny200
  */
+
 public class ConcurrentE implements ScalarIP {
 
     private static class ResultFlag<T> {

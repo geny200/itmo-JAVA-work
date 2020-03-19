@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
  *
  * @author Geny200
  */
-public class IterativeParallelism implements ScalarIP {
+public class IterativeParallelism implements ScalarIP  {
 
     private static class ResultFlag<T> {
         T flag;
@@ -59,7 +59,7 @@ public class IterativeParallelism implements ScalarIP {
         if (threads <= 0)
             throw new IllegalArgumentException("threads can't be less than or equal to zero");
 
-        int part = values.size() / threads + 1;
+        int part = values.size() / threads;
         List<Thread> threadList = IntStream.range(0, threads)
                 .mapToObj(i -> {
                             if (i != threads - 1) {
@@ -185,4 +185,3 @@ public class IterativeParallelism implements ScalarIP {
         return !all(threads, values, predicate.negate());
     }
 }
-

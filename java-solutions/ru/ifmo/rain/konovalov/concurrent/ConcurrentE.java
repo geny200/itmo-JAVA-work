@@ -60,7 +60,7 @@ public class ConcurrentE implements ScalarIP {
         if (threads <= 0)
             throw new IllegalArgumentException("threads can't be less than or equal to zero");
 
-        int part = values.size() / threads;
+        int part = values.size() / threads + 1;
         List<Thread> threadList = IntStream.range(0, threads)
                 .mapToObj(i -> {
                             if (i != threads - 1) {

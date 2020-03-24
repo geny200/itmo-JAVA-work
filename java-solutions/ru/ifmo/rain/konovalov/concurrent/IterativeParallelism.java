@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 /**
  * Implementation of {@link ScalarIP} interface
- * HW 8
+ * (HW 8)
  *
  * @author Geny200
  */

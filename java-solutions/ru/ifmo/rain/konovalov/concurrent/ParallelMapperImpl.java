@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 
 /**
  * Implementation of {@link ParallelMapper} interface
+ * (HW 8)
  *
  * @author Geny200
  */

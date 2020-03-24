@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 /**
  * Implementation of {@link ScalarIP} interface
- * HW7
+ * (HW 7)
  *
  * @author Geny200
  */

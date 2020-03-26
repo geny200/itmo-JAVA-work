@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
  */
 public class ParallelMapperImpl implements ParallelMapper {
     private final List<Thread> threadStream;
-    private final Queue<Queue<MyFunction<?>>> functionQueue;
+    private final Queue<MyFunction<?>> functionQueue;
     private int aClose;
 
     private static class ResultCollector<T> {
@@ -81,12 +81,7 @@ public class ParallelMapperImpl implements ParallelMapper {
                                 return;
                             }
                         }
-                        synchronized (functionQueue.peek()) {
-                            func = functionQueue.peek().remove();
-                            if (functionQueue.peek().isEmpty()) {
-                                functionQueue.remove();
-                            }
-                        }
+                        func = functionQueue.remove();
                         functionQueue.notify();
                     }
                     if (Thread.interrupted()) {
@@ -127,7 +122,7 @@ public class ParallelMapperImpl implements ParallelMapper {
                 .collect(Collectors.toCollection(LinkedList::new));
 
         synchronized (functionQueue) {
-            functionQueue.add(linkedList);
+            functionQueue.addAll(linkedList);
             functionQueue.notify();
         }
 

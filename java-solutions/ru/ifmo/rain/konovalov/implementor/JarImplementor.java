@@ -38,6 +38,13 @@ import java.util.zip.ZipEntry;
  */
 public class JarImplementor implements JarImpler {
     /**
+     * Constructs a new JarImplementor.
+     */
+    public JarImplementor() {
+
+    }
+
+    /**
      * Creates an implementation for interfaces depending on input parameters.
      * Use to start:
      * <ul>
@@ -82,6 +89,7 @@ public class JarImplementor implements JarImpler {
      * Returns class path.
      *
      * @param token {@link java.lang.Class} the class for which the path is required.
+     * @return {@link java.lang.String} - class path
      */
     private static String getClassPath(Class<?> token) {
         try {
@@ -97,6 +105,7 @@ public class JarImplementor implements JarImpler {
      * Returns the full name of the implementation class.
      *
      * @param token {@link java.lang.Class} a class for which the full name of its implementation is required.
+     * @return {@link java.lang.String} full name of the implementation class
      */
     private static String getImplName(final Class<?> token) {
         return token.getPackageName() + "." + token.getSimpleName() + "Impl";
@@ -106,6 +115,7 @@ public class JarImplementor implements JarImpler {
      * Compiles a {@link java.lang.Class} from its implementation. The compiled file is placed along the path <var>root</var>..
      *
      * @param root {@link java.nio.file} for the root folder to compile.
+     * @param token compiled class
      */
     public static void compile(final Path root, final Class<?> token) {
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -123,6 +133,7 @@ public class JarImplementor implements JarImpler {
      * Changes to unicode encoding.
      *
      * @param str the {@link java.lang.String} of which you need to change the encoding to unicode
+     * @return {@link java.lang.String} - in unicode encoding
      */
     private String toUnicode(String str) {
         StringBuilder escapeBuilder = new StringBuilder();
@@ -140,6 +151,7 @@ public class JarImplementor implements JarImpler {
      *
      * @param clazz A {@link java.lang.Class} - array of tokens - types.
      * @param toStr A {@link java.util.function} - generates parameter name based on number.
+     * @return {@link java.lang.String} representation a list of parameters that can be numbered by passing the corresponding parameter <var>toStr</var>
      */
     private String getStrFromArray(Class<?>[] clazz, Function<Integer, String> toStr) {
         return IntStream.range(0, clazz.length).mapToObj(i -> clazz[i].getCanonicalName() + toStr.apply(i + 1)).collect(Collectors.joining(", "));
@@ -149,6 +161,7 @@ public class JarImplementor implements JarImpler {
      * Returns the implementation of throws with the type to which the in {@link java.lang.Class[]} belongs.
      *
      * @param clazz A {@link java.lang.Class} - array of tokens - types
+     * @return {@link java.lang.String} representation a list of exceptions
      */
     private String getExceptions(Class<?>[] clazz) {
         if (clazz.length == 0)
@@ -160,6 +173,7 @@ public class JarImplementor implements JarImpler {
      * Returns the implementation of return with the type to which the {@link java.lang.Class} belongs.
      *
      * @param clazz A {@link java.lang.Class} token.
+     * @return {@link java.lang.String} - return type
      */
     private String getReturn(Class<?> clazz) {
         if (void.class.equals(clazz))
@@ -179,6 +193,7 @@ public class JarImplementor implements JarImpler {
      * @param name       A {@link java.lang.String} - field name.
      * @param returnName A {@link java.lang.String} - return type name.
      * @param body       A {@link java.lang.String} - function body.
+     * @return {@link java.lang.String} - the implementation of {@link java.lang.reflect.Executable}
      */
     private String getStrFromExecutable(Executable method, String name, String returnName, String body) {
         return String.format(
@@ -196,6 +211,7 @@ public class JarImplementor implements JarImpler {
      * Returns the implementation of {@link java.lang.reflect.Method} in the form of a {@link java.lang.String}.
      *
      * @param method A {@link java.lang.reflect.Method} for which implementation is required.
+     * @return {@link java.lang.String} - the implementation of {@link java.lang.reflect.Method}
      */
     private String getStrFromMethod(Method method) {
         return getStrFromExecutable(
@@ -211,6 +227,7 @@ public class JarImplementor implements JarImpler {
      *
      * @param className   A {@link java.lang.String} class name.
      * @param constructor A {@link java.lang.reflect.Constructor} class constructor.
+     * @return {@link java.lang.String} - representation of constructor
      */
     private String getConstructor(String className, Constructor<?> constructor) {
         if (constructor == null)
@@ -229,6 +246,7 @@ public class JarImplementor implements JarImpler {
      * Returns the package of the {@link java.lang.Class} if it exists.
      *
      * @param token A {@link java.lang.Class} token.
+     * @return {@link java.lang.String} - full name of the package if it exists
      * @see Class#getPackage()
      */
     private String getPackage(Class<?> token) {
@@ -241,6 +259,7 @@ public class JarImplementor implements JarImpler {
      * Returns the implementation of all protected methods in the form of a {@link java.lang.StringBuilder}.
      *
      * @param clazz A {@link java.lang.Class} token that requires the implementation of all protected methods.
+     * @return {@link java.lang.StringBuilder} - the implementation of all protected methods
      */
     private StringBuilder getProtectedMethods(Class<?> clazz) {
         if (clazz == null)
@@ -259,6 +278,7 @@ public class JarImplementor implements JarImpler {
      * Returns the implementation of all methods in the form of a {@link java.lang.StringBuilder}.
      *
      * @param clazz A {@link java.lang.Class} token that requires the implementation of all methods.
+     * @return {@link java.lang.StringBuilder} - the implementation of all all methods
      */
     private StringBuilder getMethods(Class<?> clazz) {
         StringBuilder result = getProtectedMethods(clazz);

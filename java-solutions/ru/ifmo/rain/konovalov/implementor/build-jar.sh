@@ -1,5 +1,5 @@
 #!/bin/bash
-mkdir "_build" && \
+mkdir "_build"
 javac -d "./_build" -cp "../../../../../../../java-advanced-2020/artifacts/*" "*.java" && \
 cd "./_build" && \
 jar -xf ../../../../../../../../java-advanced-2020/artifacts/info.kgeorgiy.java.advanced.implementor.jar \
@@ -11,4 +11,6 @@ jar -cfm _implemetor.jar ./../Manifest.txt \
      info/kgeorgiy/java/advanced/implementor/*.class && \
 mv _implemetor.jar ./../ && \
 cd ./../ && \
+echo "OK" || \
+echo "Error. Please try another bash"
 rm -r -f _build

@@ -64,7 +64,7 @@ public class WebCrawler implements Crawler {
                 Result result = webCrawler.download(url, depth);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error creating CachingDownloader");
         }
     }
 }

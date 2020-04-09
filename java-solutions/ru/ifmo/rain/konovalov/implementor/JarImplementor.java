@@ -117,8 +117,10 @@ public class JarImplementor implements JarImpler {
      * @param root {@link java.nio.file} for the root folder to compile.
      * @param token compiled class
      */
-    public static void compile(final Path root, final Class<?> token) {
+    public static void compile(final Path root, final Class<?> token) throws ImplerException {
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null)
+            throw new ImplerException("Compiler don't find");
         String[] argsStr = {
                 "-encoding",
                 "cp866",
@@ -127,6 +129,8 @@ public class JarImplementor implements JarImpler {
                 root.resolve(getImplName(token).replace(".", File.separator) + ".java").toAbsolutePath().toString()
         };
         final int exitCode = compiler.run(null, null, null, argsStr);
+        if (exitCode == 0)
+            throw new ImplerException("Compiler exit code " + exitCode + " expected 0");
     }
 
     /**

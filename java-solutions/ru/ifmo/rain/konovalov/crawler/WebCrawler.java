@@ -1,7 +1,6 @@
 package ru.ifmo.rain.konovalov.crawler;
 
 import info.kgeorgiy.java.advanced.crawler.*;
-import info.kgeorgiy.java.advanced.implementor.JarImpler;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -10,7 +9,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Implementation of {@link JarImpler} interface.
+ * Implementation of {@link Crawler} interface.
  *
  * @author Geny200
  * @see Crawler

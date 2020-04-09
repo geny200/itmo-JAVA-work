@@ -1,6 +1,7 @@
 package ru.ifmo.rain.konovalov.crawler;
 
 import info.kgeorgiy.java.advanced.crawler.*;
+import info.kgeorgiy.java.advanced.implementor.JarImpler;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -8,26 +9,39 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Implementation of {@link JarImpler} interface.
+ *
+ * @author Geny200
+ * @see Crawler
+ * @see info.kgeorgiy.java.advanced.crawler.Crawler
+ */
 public class WebCrawler implements Crawler {
-    Downloader downloader;
-    ExecutorService executorDownload;
-    ExecutorService executorExtractor;
+    private Downloader downloader;
+    private ExecutorService executorDownload;
+    private ExecutorService executorExtractor;
 
+    /**
+     * Constructs a new WebCrawler.
+     */
     public WebCrawler(Downloader downloader, int downgrades, int extractors, int ignore) {
         this.executorDownload = Executors.newFixedThreadPool(downgrades);
         this.executorExtractor = Executors.newFixedThreadPool(extractors);
         this.downloader = downloader;
     }
 
+    /**
+     * Exception class for WebCrawler.
+     */
     protected static class WebCrawlerException extends Exception {
-        WebCrawlerException(String message) {
+        public WebCrawlerException(String message) {
             super(message);
         }
     }
 
     private static class Vertex {
-        final String url;
-        final long level;
+        private final String url;
+        private final long level;
 
         Vertex(String url, long level) {
             this.url = url;
@@ -44,14 +58,14 @@ public class WebCrawler implements Crawler {
     }
 
     private static class DownloadTask {
-        final Downloader downloader;
-        final List<String> downloads;
-        final ConcurrentMap<String, IOException> badDownloads;
-        final ConcurrentMap<String, Boolean> passedUrl ;
-        final BlockingQueue<Vertex> queue;
-        AtomicInteger work;
-        final ExecutorService exeDownload;
-        final ExecutorService exeExtractor;
+        private final Downloader downloader;
+        private final List<String> downloads;
+        private final ConcurrentMap<String, IOException> badDownloads;
+        private final ConcurrentMap<String, Boolean> passedUrl;
+        private final BlockingQueue<Vertex> queue;
+        private AtomicInteger work;
+        private final ExecutorService exeDownload;
+        private final ExecutorService exeExtractor;
 
         public DownloadTask(Downloader downloader, ExecutorService exeDownload, ExecutorService exeExtractor) {
             this.downloader = downloader;
@@ -73,11 +87,9 @@ public class WebCrawler implements Crawler {
                 }
             } catch (IOException e) {
                 badDownloads.putIfAbsent(vertex.getUrl(), e);
-            }
-            catch (InterruptedException ignored) {
+            } catch (InterruptedException ignored) {
 
-            }
-            finally {
+            } finally {
                 if (work.decrementAndGet() == 0) {
                     try {
                         queue.put(vertex);
@@ -95,11 +107,9 @@ public class WebCrawler implements Crawler {
                 work.incrementAndGet();
             } catch (IOException e) {
                 badDownloads.putIfAbsent(vertex.getUrl(), e);
-            }
-            catch (RejectedExecutionException ignored) {
+            } catch (RejectedExecutionException ignored) {
 
-            }
-            finally {
+            } finally {
                 if (work.decrementAndGet() == 0) {
                     try {
                         queue.put(vertex);
@@ -119,11 +129,8 @@ public class WebCrawler implements Crawler {
                 if (passedUrl.putIfAbsent(localVertex.getUrl(), true) == null) {
                     try {
                         work.incrementAndGet();
-                        exeDownload.submit(() -> {
-                            download(localVertex);
-                        });
-                    }
-                    catch (RejectedExecutionException ignore) {
+                        exeDownload.submit(() -> download(localVertex));
+                    } catch (RejectedExecutionException ignore) {
 
                     }
                 }
@@ -176,6 +183,18 @@ public class WebCrawler implements Crawler {
         throw new WebCrawlerException("Invalid input");
     }
 
+    /**
+     * Start WebCrawler.
+     * Use to start:
+     * <ul>
+     *         <li> {@code WebCrawler url [depth [downloads [extractors [perHost]]]]}
+     *         calls {@link WebCrawler#download(String, int)}
+     *         </li>
+     * </ul>
+     *
+     * @param args array of input parameters ({@link java.lang.String}).
+     * @see WebCrawler#download(String, int)
+     */
     public static void main(String[] args) {
         try {
             if (args == null || args.length < 1 || args.length > 5) {

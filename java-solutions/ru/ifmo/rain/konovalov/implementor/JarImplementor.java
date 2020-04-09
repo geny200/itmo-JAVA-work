@@ -38,7 +38,7 @@ import java.util.zip.ZipEntry;
  */
 public class JarImplementor implements JarImpler {
     /**
-     * Constructs a new JarImplementor.
+     * Constructs a new JarImplementor.fc
      */
     public JarImplementor() {
 

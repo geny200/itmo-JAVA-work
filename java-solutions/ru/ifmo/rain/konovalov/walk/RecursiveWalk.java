@@ -1,5 +1,4 @@
 package ru.ifmo.rain.konovalov.walk;
-//"C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.1\jbr\bin\java.exe" -cp . -p . -m info.kgeorgiy.java.advanced.walk RecursiveWalk ru.ifmo.rain.konovalov.walk.RecursiveWalk
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -8,7 +8,7 @@ import java.nio.file.*;
 public class Walk {
     public static void main(String[] args) {
         if (args == null || args.length < 2 || args[0] == null || args[1] == null) {
-            System.out.println("An I/O error occurred: null argument");
+            System.out.println("Error: null argument");
             return;
         }
 
@@ -16,9 +16,14 @@ public class Walk {
             Path out = Paths.get(args[1]);
             if (!Files.exists(out)) {
                 Path parent = out.getParent();
-                if (parent != null)
-                    Files.createDirectories(parent);
-                Files.createFile(out);
+                try {
+                    if (parent != null)
+                        Files.createDirectories(parent);
+                    Files.createFile(out);
+                } catch (IOException e) {
+                    System.out.println("Output file creation error:" + e.getMessage());
+                    return;
+                }
             }
 
             try (BufferedReader is = Files.newBufferedReader(Paths.get(args[0]), StandardCharsets.UTF_8)) {
@@ -28,10 +33,19 @@ public class Walk {
                         os.newLine();
                     }
                 }
+                catch (IOException e) {
+                    System.out.println("An output error occurred:" + e.getMessage());
+                }
+            }
+            catch (IOException e) {
+                System.out.println("An input error occurred:" + e.getMessage());
+            } catch (InvalidPathException e) {
+                System.out.println("Invalid input path:" + e.getMessage());
             }
             System.out.println("OK");
-        } catch (IOException | InvalidPathException e) {
-            System.err.println("An I/O error occurred:" + e.getMessage());
+        }
+        catch (InvalidPathException e) {
+            System.out.println("Invalid output path:" + e.getMessage());
         }
     }
 }

@@ -33,7 +33,7 @@ public class RecursiveWalk extends SimpleFileVisitor<Path> {
 
     public static void main(String[] args) {
         if (args == null || args.length < 2 || args[0] == null || args[1] == null) {
-            System.out.println("An I/O error: null argument");
+            System.out.println("Error: null argument");
             return;
         }
 

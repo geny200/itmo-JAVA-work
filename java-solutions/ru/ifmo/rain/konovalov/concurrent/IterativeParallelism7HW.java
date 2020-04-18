@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
  *
  * @author Geny200
  */
-public class IterativeParallelismT implements ScalarIP {
+public class IterativeParallelism7HW implements ScalarIP {
 
     private static class ResultFlag<T> {
         T flag;

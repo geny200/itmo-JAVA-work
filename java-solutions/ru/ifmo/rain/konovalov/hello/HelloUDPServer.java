@@ -7,9 +7,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implementation of {@link HelloServer} interface.
@@ -24,27 +21,26 @@ public class HelloUDPServer implements HelloServer {
     /**
      * Constructs a new HelloUDPServer.
      */
-    HelloUDPServer() {
+    public HelloUDPServer() {
         udpServer = null;
     }
 
-    class UDPServer implements AutoCloseable {
+    class UDPServer extends UDPSocketWorker {
         final DatagramSocket socketUDP;
-        final ExecutorService threadPool;
         final int bufferReceiveSize;
 
-        UDPServer(int port, int threads) throws SocketException {
-            this.socketUDP = new DatagramSocket(port);
+        UDPServer(DatagramSocket socket, int threads) throws SocketException {
+            super(threads);
+            this.socketUDP = socket;
             this.bufferReceiveSize = socketUDP.getReceiveBufferSize();
-            this.threadPool = Executors.newFixedThreadPool(threads);
-            for (int i = 0; i != threads; ++i)
-                threadPool.submit(this::work);
+            start();
         }
 
-        void work() {
+        @Override
+        protected void work(int number) {
+            DatagramPacket packet = new DatagramPacket(new byte[bufferReceiveSize], bufferReceiveSize);
             try {
                 while (true) {
-                    DatagramPacket packet = new DatagramPacket(new byte[bufferReceiveSize], bufferReceiveSize);
                     socketUDP.receive(packet);
                     String sendMessage = "Hello, " + new String(packet.getData(), packet.getOffset(), packet.getLength(), StandardCharsets.UTF_8);
                     byte[] sendData = sendMessage.getBytes(StandardCharsets.UTF_8);
@@ -69,17 +65,8 @@ public class HelloUDPServer implements HelloServer {
         @Override
         public void close() {
             socketUDP.close();
-            try {
-                threadPool.shutdown();
-                threadPool.awaitTermination(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            super.close();
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 
     /**
@@ -93,7 +80,8 @@ public class HelloUDPServer implements HelloServer {
         if (udpServer != null)
             new IllegalStateException("Server was started");
         try {
-            udpServer = new UDPServer(port, threads);
+            DatagramSocket socket = new DatagramSocket(port);
+            udpServer = new UDPServer(socket, threads);
         } catch (SocketException e) {
             udpServer = null;
             e.printStackTrace();

@@ -10,7 +10,20 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Implementation of {@link HelloClient} interface.
+ *
+ * @author Geny200
+ * @see HelloClient
+ * @see info.kgeorgiy.java.advanced.hello.HelloClient
+ */
 public class HelloUDPClient implements HelloClient {
+
+    /**
+     * Constructs a new HelloUDPClient.
+     */
+    public HelloUDPClient() {
+    }
 
     class UDPClient extends UDPSocketWorker {
         private final BlockingQueue<String> result;
@@ -20,7 +33,7 @@ public class HelloUDPClient implements HelloClient {
         private final int requests;
         private final AtomicInteger workers;
 
-        UDPClient(SocketAddress address, int threads, int requests, String prefix) throws SocketException {
+        protected UDPClient(SocketAddress address, int threads, int requests, String prefix) throws SocketException {
             super(threads);
             this.requests = requests;
             this.prefix = prefix;
@@ -104,7 +117,7 @@ public class HelloUDPClient implements HelloClient {
             }
         }
 
-        void print() {
+        public void print() {
             start();
             try {
                 while (workers.get() > 0 || result.size() > 0) {
@@ -133,9 +146,38 @@ public class HelloUDPClient implements HelloClient {
         }
     }
 
+    /**
+     * Start HelloUDPClient.
+     * Use to start:
+     * <ul>
+     *         <li> {@code HelloUDPClient host port prefix threads requests}
+     *         calls {@link HelloUDPClient#run(String, int, String, int, int)}
+     *         </li>
+     * </ul>
+     *
+     * @param args array of input parameters ({@link java.lang.String}).
+     * @see HelloUDPClient#run(String, int, String, int, int)
+     */
     public static void main(String[] args) {
+        if (args == null || args.length != 5) {
+            System.out.println("Input arguments should be 5: host, port, prefix, threads, requests");
+            return;
+        }
+        for (int i = 0; i != 5; ++i) {
+            if (args[i] == null) {
+                System.out.println("Invalid input argument " + i + " - null argument)");
+                return;
+            }
+        }
+        int port = Integer.parseInt(args[1]), threads = Integer.parseInt(args[3]), requests = Integer.parseInt(args[4]);
         HelloUDPClient helloUDPServer = new HelloUDPClient();
-        helloUDPServer.run("localhost", 49741, "Prefix", 1, 1);
+        try {
+            helloUDPServer.run(args[0], port, args[2], threads, requests);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid argument: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -149,6 +191,12 @@ public class HelloUDPClient implements HelloClient {
      */
     @Override
     public void run(String host, int port, String prefix, int threads, int requests) {
+        if (port <= 1023)
+            throw new IllegalArgumentException("Ports less than 1023 are reserved");
+        if (threads <= 0)
+            throw new IllegalArgumentException("Thread must be greater than 0");
+        if (requests < 0)
+            throw new IllegalArgumentException("Thread must be eq or greater than 0");
         System.out.println("Client starts with parameters " + "\n"
                 + "host:        " + host + "\n"
                 + "port:        " + port + "\n"

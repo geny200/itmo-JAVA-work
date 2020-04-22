@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * Implementation of {@link HelloServer} interface.
@@ -16,7 +17,7 @@ import java.nio.charset.StandardCharsets;
  * @see info.kgeorgiy.java.advanced.hello.HelloServer
  */
 public class HelloUDPServer implements HelloServer {
-    UDPServer udpServer;
+    private UDPServer udpServer;
 
     /**
      * Constructs a new HelloUDPServer.
@@ -25,9 +26,9 @@ public class HelloUDPServer implements HelloServer {
         udpServer = null;
     }
 
-    class UDPServer extends UDPSocketWorker {
-        final DatagramSocket socketUDP;
-        final int bufferReceiveSize;
+    static private class UDPServer extends UDPSocketWorker {
+        private final DatagramSocket socketUDP;
+        private final int bufferReceiveSize;
 
         UDPServer(DatagramSocket socket, int threads) throws SocketException {
             super(threads);
@@ -70,6 +71,44 @@ public class HelloUDPServer implements HelloServer {
     }
 
     /**
+     * Start HelloUDPServer.
+     * Use to start:
+     * <ul>
+     *         <li> {@code HelloUDPServer port threads}
+     *         calls {@link HelloUDPServer#start(int, int)}
+     *         </li>
+     * </ul>
+     *
+     * @param args array of input parameters ({@link java.lang.String}).
+     * @see HelloUDPServer#start(int, int)
+     */
+    public static void main(String[] args) {
+        if (args == null || args.length != 2) {
+            System.out.println("Input arguments should be 2: port threads");
+            return;
+        }
+        for (int i = 0; i != 2; ++i) {
+            if (args[i] == null) {
+                System.out.println("Invalid input argument " + i + " - null argument)");
+                return;
+            }
+        }
+        int port = Integer.parseInt(args[0]), threads = Integer.parseInt(args[1]);
+        try (HelloUDPServer helloUDPServer = new HelloUDPServer()) {
+            helloUDPServer.start(port, threads);
+            System.out.println("Server started");
+            System.out.println("Press Enter to close Server");
+            Scanner sc = new Scanner(System.in);
+            sc.nextLine();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid argument: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        System.out.println("Server closed");
+    }
+
+    /**
      * Starts a new Hello server.
      *
      * @param port    server port.
@@ -77,8 +116,12 @@ public class HelloUDPServer implements HelloServer {
      */
     @Override
     public void start(int port, int threads) {
+        if (port <= 1023)
+            throw new IllegalArgumentException("Ports less than 1023 are reserved");
+        if (threads <= 0)
+            throw new IllegalArgumentException("Thread must be greater than 0");
         if (udpServer != null)
-            new IllegalStateException("Server was started");
+            throw new IllegalStateException("Server was started");
         try {
             DatagramSocket socket = new DatagramSocket(port);
             udpServer = new UDPServer(socket, threads);

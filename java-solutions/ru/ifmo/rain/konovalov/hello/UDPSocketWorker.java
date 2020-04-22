@@ -4,11 +4,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public abstract class UDPSocketWorker implements AutoCloseable {
+abstract class UDPSocketWorker implements AutoCloseable {
     private final ExecutorService threadPool;
     private final int threads;
 
-    UDPSocketWorker(int threads) {
+    protected UDPSocketWorker(int threads) {
         this.threadPool = Executors.newFixedThreadPool(threads);
         this.threads = threads;
     }

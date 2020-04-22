@@ -1,7 +1,7 @@
 package ru.ifmo.rain.konovalov.hello;
 
 import info.kgeorgiy.java.advanced.hello.HelloServer;
-
+//"C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.1\jbr\bin\java.exe" -cp . -p . -m info.kgeorgiy.java.advanced.hello server ru.ifmo.rain.konovalov.hello.HelloUDPServer
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -39,11 +39,20 @@ public class HelloUDPServer implements HelloServer {
 
         @Override
         protected void work(int number) {
-            DatagramPacket packet = new DatagramPacket(new byte[bufferReceiveSize], bufferReceiveSize);
+            byte[] buffer = new byte[bufferReceiveSize];
+            DatagramPacket packet = new DatagramPacket(buffer, 0, buffer.length);
             try {
                 while (true) {
+                    packet.setData(buffer, 0, buffer.length);
                     socketUDP.receive(packet);
-                    String sendMessage = "Hello, " + new String(packet.getData(), packet.getOffset(), packet.getLength(), StandardCharsets.UTF_8);
+
+                    String sendMessage = "Hello, "
+                            + new String(
+                            packet.getData(),
+                            packet.getOffset(),
+                            packet.getLength(),
+                            StandardCharsets.UTF_8);
+
                     byte[] sendData = sendMessage.getBytes(StandardCharsets.UTF_8);
                     if (sendData.length > socketUDP.getSendBufferSize()) {
                         synchronized (socketUDP) {
@@ -51,15 +60,22 @@ public class HelloUDPServer implements HelloServer {
                                 socketUDP.setSendBufferSize(sendData.length);
                             }
                         }
-                        packet.setData(sendData);
-                    } else {
-                        for (int i = 0; i != sendData.length; ++i)
-                            packet.getData()[i] = sendData[i];
-                        packet.setLength(sendData.length);
                     }
-                    socketUDP.send(packet);
+                    packet.setData(sendData, 0, sendData.length);
+
+                    while (true) {
+                        try {
+                            socketUDP.send(packet);
+                            break;
+                        } catch (IOException ignore) {
+                            if (socketUDP.isClosed())
+                                return;
+                        }
+                    }
                 }
             } catch (IOException ignore) {
+                System.out.println("" + number + " IOExeption! " + ignore.getMessage());
+                ignore.printStackTrace();
             }
         }
 
@@ -124,6 +140,7 @@ public class HelloUDPServer implements HelloServer {
             throw new IllegalStateException("Server was started");
         try {
             DatagramSocket socket = new DatagramSocket(port);
+
             udpServer = new UDPServer(socket, threads);
         } catch (SocketException e) {
             udpServer = null;

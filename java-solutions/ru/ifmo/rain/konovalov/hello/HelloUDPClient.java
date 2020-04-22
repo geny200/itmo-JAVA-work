@@ -25,7 +25,7 @@ public class HelloUDPClient implements HelloClient {
     public HelloUDPClient() {
     }
 
-    class UDPClient extends UDPSocketWorker {
+    static private class UDPClient extends UDPSocketWorker {
         private final BlockingQueue<String> result;
         private final ArrayList<DatagramSocket> sockets;
         private final ArrayList<DatagramPacket> packets;

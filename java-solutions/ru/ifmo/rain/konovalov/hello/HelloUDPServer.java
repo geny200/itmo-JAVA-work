@@ -1,12 +1,11 @@
 package ru.ifmo.rain.konovalov.hello;
 
 import info.kgeorgiy.java.advanced.hello.HelloServer;
-//"C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.1\jbr\bin\java.exe" -cp . -p . -m info.kgeorgiy.java.advanced.hello server ru.ifmo.rain.konovalov.hello.HelloUDPServer
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
@@ -47,13 +46,11 @@ public class HelloUDPServer implements HelloServer {
 
         private void queueWorker() {
             try {
-                byte[] buffer = new byte[bufferReceiveSize];
                 while (true) {
-                    DatagramPacket packet = new DatagramPacket(buffer, 0, buffer.length);
+                    DatagramPacket packet = new DatagramPacket(new byte[bufferReceiveSize], 0, bufferReceiveSize);
                     try {
                         socketUDP.receive(packet);
                         packets.put(packet);
-                    } catch (SocketTimeoutException ignore) {
                     } catch (IOException e) {
                         if (socketUDP.isClosed())
                             return;
@@ -162,7 +159,6 @@ public class HelloUDPServer implements HelloServer {
                 + "threads: " + threads);
         try {
             DatagramSocket socket = new DatagramSocket(port);
-            socket.setSoTimeout(1000);
             udpServer = new UDPServer(socket, threads);
             System.out.println("Server started");
         } catch (SocketException e) {

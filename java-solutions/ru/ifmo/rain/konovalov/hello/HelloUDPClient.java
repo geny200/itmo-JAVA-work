@@ -42,7 +42,7 @@ public class HelloUDPClient implements HelloClient {
             try {
                 for (int i = 0; i != threads; ++i) {
                     DatagramSocket localSocket = new DatagramSocket();
-                    localSocket.setSoTimeout(2000);
+                    localSocket.setSoTimeout(1000);
                     this.sockets.add(localSocket);
                     this.packets.add(new DatagramPacket(new byte[0], 0, 0, address));
                 }
@@ -60,12 +60,15 @@ public class HelloUDPClient implements HelloClient {
         protected void work(int number) {
             DatagramSocket socket;
             DatagramPacket packet;
-            synchronized (sockets) {
-                socket = sockets.get(number);
-                packet = packets.get(number);
-            }
+            int bufferSize;
 
             try {
+                synchronized (sockets) {
+                    socket = sockets.get(number);
+                    packet = packets.get(number);
+                    bufferSize = socket.getReceiveBufferSize();
+                }
+
                 for (int i = 0; i != requests; ++i) {
                     String sendMessage = prefix + (number) + "_" + i;
                     byte[] sendData = sendMessage.getBytes(StandardCharsets.UTF_8);
@@ -73,11 +76,9 @@ public class HelloUDPClient implements HelloClient {
                     packet.setData(sendData, 0, sendData.length);
                     result.put("Thread - " + number + "\n"
                             + "Send:    " + sendMessage + "\n"
-                            + "Receive: " + request(socket, packet, sendMessage));
+                            + "Receive: " + request(socket, packet, bufferSize, sendMessage));
                 }
-            } catch (InterruptedException ignore) {
-                Thread.currentThread().interrupt();
-            } catch (IOException ignore) {
+            } catch (InterruptedException | IOException ignore) {
                 // socket was closed
             } finally {
                 synchronized (sockets) {
@@ -88,46 +89,52 @@ public class HelloUDPClient implements HelloClient {
             }
         }
 
-        protected String request(final DatagramSocket socket, DatagramPacket packet, String message) throws IOException {
-            int bufferSize = socket.getReceiveBufferSize();
-            DatagramPacket receivePacket = new DatagramPacket(new byte[bufferSize], bufferSize);
+        protected String request(final DatagramSocket socket, DatagramPacket packet, int receiveBufferSize, String message) throws IOException {
+            byte[] buffer = new byte[receiveBufferSize];
+            DatagramPacket receivePacket = new DatagramPacket(buffer, 0, buffer.length);
 
             while (true) {
-                try {
-                    socket.send(packet);
+                while (true) {
                     try {
+                        socket.send(packet);
+                        break;
+                    } catch (IOException e) {
+                        if (socket.isClosed())
+                            throw e;
+                    }
+                }
+                while (true) {
+                    try {
+                        receivePacket.setData(buffer, 0, buffer.length);
                         socket.receive(receivePacket);
                         String answer = new String(
                                 receivePacket.getData(),
                                 receivePacket.getOffset(),
                                 receivePacket.getLength(),
                                 StandardCharsets.UTF_8);
-                        if (answer.endsWith(message)
+                        if (receivePacket.getSocketAddress().equals(packet.getSocketAddress())
+                                && answer.endsWith(message)
                                 && answer.startsWith("Hello, ")
                                 && answer.length() == (message.length() + "Hello, ".length()))
                             return answer;
                         System.out.println("resend");
                     } catch (SocketTimeoutException ignore) {
-
+                        break;
+                    } catch (IOException e) {
+                        if (socket.isClosed())
+                            throw e;
                     }
-                } catch (IOException e) {
-                    if (socket.isClosed())
-                        throw e;
                 }
             }
         }
 
-        public void print() {
+        public void print() throws InterruptedException {
             start();
-            try {
-                while (workers.get() > 0 || result.size() > 0) {
-                    String line = result.take();
-                    if (workers.get() < 0)
-                        return;
-                    System.out.println(line);
-                }
-            } catch (InterruptedException ignore) {
-                Thread.currentThread().interrupt();
+            while (workers.get() > 0 || result.size() > 0) {
+                String line = result.take();
+                if (workers.get() < 0)
+                    return;
+                System.out.println(line);
             }
         }
 
@@ -216,6 +223,9 @@ public class HelloUDPClient implements HelloClient {
             client.print();
         } catch (SocketException e) {
             throw new IllegalStateException("Socket error - " + e.getMessage());
+        } catch (InterruptedException ignore) {
+            System.out.println("Client interrupted");
+            Thread.currentThread().interrupt();
         }
         System.out.println("Client finished");
     }

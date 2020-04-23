@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Implementation of {@link HelloClient} interface.
  *
  * @author Geny200
- * @see HelloClient
+ * @see  HelloClient
  * @see info.kgeorgiy.java.advanced.hello.HelloClient
  */
 public class HelloUDPClient implements HelloClient {

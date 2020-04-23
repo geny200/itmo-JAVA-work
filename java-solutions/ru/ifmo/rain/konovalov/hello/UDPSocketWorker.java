@@ -1,5 +1,6 @@
 package ru.ifmo.rain.konovalov.hello;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +27,10 @@ abstract class UDPSocketWorker implements AutoCloseable {
     public void close() {
         try {
             threadPool.shutdown();
-            if (!threadPool.isTerminated())
+            if (!threadPool.isTerminated()) {
                 threadPool.awaitTermination(1, TimeUnit.SECONDS);
+                threadPool.shutdownNow();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

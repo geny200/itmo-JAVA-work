@@ -84,7 +84,13 @@ public class HelloUDPClient implements HelloClient {
                 synchronized (sockets) {
                     if (!sockets.get(number).isClosed())
                         sockets.get(number).close();
-                    workers.decrementAndGet();
+                    if (workers.decrementAndGet() == 0) {
+                        try {
+                            result.put(" ");
+                        } catch (InterruptedException ignore) {
+
+                        }
+                    }
                 }
             }
         }

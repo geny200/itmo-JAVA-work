@@ -28,7 +28,7 @@ abstract class UDPSocketWorker implements AutoCloseable {
         try {
             threadPool.shutdown();
             if (!threadPool.isTerminated()) {
-                threadPool.awaitTermination(1, TimeUnit.SECONDS);
+                threadPool.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
                 threadPool.shutdownNow();
             }
         } catch (InterruptedException e) {

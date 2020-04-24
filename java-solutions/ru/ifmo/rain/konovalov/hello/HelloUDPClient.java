@@ -123,7 +123,7 @@ public class HelloUDPClient implements HelloClient {
                                 && answer.startsWith("Hello, ")
                                 && answer.length() == (message.length() + "Hello, ".length()))
                             return answer;
-                        System.out.println("resend");
+                        //System.out.println("resend");
                     } catch (SocketTimeoutException ignore) {
                         break;
                     } catch (IOException e) {
@@ -140,7 +140,7 @@ public class HelloUDPClient implements HelloClient {
                 String line = result.take();
                 if (workers.get() < 0)
                     return;
-                System.out.println(line);
+                //System.out.println(line);
             }
         }
 
@@ -210,12 +210,12 @@ public class HelloUDPClient implements HelloClient {
             throw new IllegalArgumentException("Thread must be greater than 0");
         if (requests < 0)
             throw new IllegalArgumentException("Thread must be eq or greater than 0");
-        System.out.println("Client starts with parameters " + "\n"
-                + "host:        " + host + "\n"
-                + "port:        " + port + "\n"
-                + "prefix:      " + prefix + "\n"
-                + "threads:     " + threads + "\n"
-                + "requests:    " + requests);
+        //System.out.println("Client starts with parameters " + "\n"
+        //        + "host:        " + host + "\n"
+        //        + "port:        " + port + "\n"
+        //        + "prefix:      " + prefix + "\n"
+        //        + "threads:     " + threads + "\n"
+        //        + "requests:    " + requests);
 
         SocketAddress socketAddress;
         try {
@@ -230,9 +230,9 @@ public class HelloUDPClient implements HelloClient {
         } catch (SocketException e) {
             throw new IllegalStateException("Socket error - " + e.getMessage());
         } catch (InterruptedException ignore) {
-            System.out.println("Client interrupted");
+            //System.out.println("Client interrupted");
             Thread.currentThread().interrupt();
         }
-        System.out.println("Client finished");
+        //System.out.println("Client finished");
     }
 }

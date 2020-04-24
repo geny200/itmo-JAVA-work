@@ -154,13 +154,13 @@ public class HelloUDPServer implements HelloServer {
             throw new IllegalArgumentException("Thread must be greater than 0");
         if (udpServer != null)
             throw new IllegalStateException("Server was started");
-        System.out.println("Server starts with parameters " + "\n"
-                + "port:    " + port + "\n"
-                + "threads: " + threads);
+        //System.out.println("Server starts with parameters " + "\n"
+        //        + "port:    " + port + "\n"
+        //        + "threads: " + threads);
         try {
             DatagramSocket socket = new DatagramSocket(port);
             udpServer = new UDPServer(socket, threads);
-            System.out.println("Server started");
+            //System.out.println("Server started");
         } catch (SocketException e) {
             udpServer = null;
             throw new IllegalStateException("Socket error: " + e.getMessage());
@@ -174,7 +174,7 @@ public class HelloUDPServer implements HelloServer {
     public void close() {
         if (udpServer != null) {
             udpServer.close();
-            System.out.println("Server finished");
+            //System.out.println("Server finished");
         }
     }
 }

@@ -3,12 +3,13 @@ package ru.ifmo.rain.konovalov.hello;
 import info.kgeorgiy.java.advanced.hello.HelloServer;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -19,6 +20,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @see info.kgeorgiy.java.advanced.hello.HelloServer
  */
 public class HelloUDPNonblockingServer implements HelloServer {
+    Selector selector;
+    DatagramChannel channel;
+    ExecutorService executorService;
     final private int UDP_SIZE = 65536;
     AtomicBoolean startFlag;
     AtomicBoolean isClose;
@@ -33,25 +37,35 @@ public class HelloUDPNonblockingServer implements HelloServer {
     private void send(SelectionKey selectionKey) {
         try {
             if (selectionKey.isReadable()) {
-                ReadableByteChannel readableByteChannel = (ReadableByteChannel) selectionKey.channel();
-                WritableByteChannel writableByteChannel = (WritableByteChannel) selectionKey.channel();
-                byteBuffer.clear();
-                int read = readableByteChannel.read(byteBuffer);
-                if (read > 0) {
+                SocketAddress address = channel.receive(byteBuffer);
+                if (address != null) {
                     String sendMessage = "Hello, " + new String(
                             byteBuffer.array(),
                             0,
-                            read,
+                            byteBuffer.position(),
                             StandardCharsets.UTF_8);
                     byte[] sendData = sendMessage.getBytes(StandardCharsets.UTF_8);
-                    writableByteChannel.write(ByteBuffer.wrap(sendData, 0, sendData.length));
+                    channel.send(ByteBuffer.wrap(sendData, 0, sendData.length), address);
+                    byteBuffer.clear();
                 }
-                selectionKey.interestOps(SelectionKey.OP_WRITE);
             }
         } catch (IOException e) {
             if (!selectionKey.channel().isOpen())
                 selectionKey.cancel();
         }
+    }
+
+    void execute() {
+        try {
+            while (!isClose.get()) {
+                selector.select(this::send, 1000);
+            }
+        }
+        catch (IOException ignore) {
+
+        }
+        this.startFlag.set(false);
+        this.isClose.set(false);
     }
 
     /**
@@ -68,33 +82,24 @@ public class HelloUDPNonblockingServer implements HelloServer {
             throw new IllegalArgumentException("Thread must be greater than 0");
         if (this.startFlag.compareAndExchange(false, true))
             throw new IllegalStateException("Server was started");
+
         try {
-            DatagramChannel channel;
+            selector = Selector.open();
             try {
                 channel = DatagramChannel.open();
-                channel.socket().bind(new InetSocketAddress(port));
                 channel.configureBlocking(false);
-                channel.socket().setReceiveBufferSize(UDP_SIZE);
+                channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+                channel.bind(new InetSocketAddress(port));
+                channel.register(selector, SelectionKey.OP_READ);
             } catch (IOException e) {
                 throw new IllegalArgumentException("DatagramChannel error - " + e.getMessage());// todo - rename exception
-            }
-            while (!isClose.get()) {
-                SocketAddress socketAddress = channel.receive(byteBuffer);
-                if (socketAddress != null) {
-                    String answer = "Hello, " + new String(
-                            byteBuffer.array(),
-                            byteBuffer.arrayOffset(),
-                            byteBuffer.position(),
-                            StandardCharsets.UTF_8);
-                    channel.send(ByteBuffer.wrap(answer.getBytes(StandardCharsets.UTF_8)), socketAddress);
-                    byteBuffer.clear();
-                }
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Selector error - " + e.getMessage());
         }
-        this.startFlag.set(false);
-        this.isClose.set(false);
+
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(this::execute);
     }
 
     /**
@@ -103,5 +108,12 @@ public class HelloUDPNonblockingServer implements HelloServer {
     @Override
     public void close() {
         isClose.set(true);
+        executorService.shutdown();
+        try {
+            if (executorService.awaitTermination(2000, TimeUnit.MILLISECONDS))
+                executorService.shutdownNow();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

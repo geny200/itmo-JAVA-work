@@ -5,10 +5,8 @@ import info.kgeorgiy.java.advanced.hello.HelloServer;
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,6 +26,9 @@ public class HelloUDPNonblockingServer implements HelloServer {
     AtomicBoolean isClose;
     ByteBuffer byteBuffer;
 
+    /**
+     * Constructs a new HelloUDPNonblockingServer.
+     */
     public HelloUDPNonblockingServer() {
         this.startFlag = new AtomicBoolean(false);
         this.isClose = new AtomicBoolean(false);
@@ -55,13 +56,12 @@ public class HelloUDPNonblockingServer implements HelloServer {
         }
     }
 
-    void execute() {
+    private void execute() {
         try {
             while (!isClose.get()) {
                 selector.select(this::send, 1000);
             }
-        }
-        catch (IOException ignore) {
+        } catch (IOException ignore) {
 
         }
         this.startFlag.set(false);

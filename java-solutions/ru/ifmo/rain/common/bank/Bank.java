@@ -33,9 +33,9 @@ public interface Bank extends Remote {
      *
      * @param accountName  - account identifier.
      * @param remotePerson {@link ru.ifmo.rain.common.bank.Account} - person.
-     * @return {@link ru.ifmo.rain.common.bank.Account} - created account or existing.
+     * @return {@link ru.ifmo.rain.common.bank.Person} - person with an added account if it did not exist.
      */
-    Account createPersonAccount(String accountName, Person remotePerson)
+    Person createPersonAccount(String accountName, Person remotePerson)
             throws RemoteException;
 
     /**

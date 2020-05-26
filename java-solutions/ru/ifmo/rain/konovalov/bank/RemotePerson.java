@@ -41,7 +41,6 @@ public class RemotePerson extends UnicastRemoteObject implements Person {
         return accounts.get(passport + ':' + accountName);
     }
 
-    @Override
     public void setAccount(RemoteAccount account) {
         accounts.putIfAbsent(account.getId(), account);
     }

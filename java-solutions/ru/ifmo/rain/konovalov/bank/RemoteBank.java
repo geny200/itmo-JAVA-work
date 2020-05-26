@@ -51,10 +51,12 @@ class RemoteBank implements Bank {
     }
 
     @Override
-    public Account createPersonAccount(String accountName, Person person) throws RemoteException {
+    public Person createPersonAccount(String accountName, Person person) throws RemoteException {
         if (person instanceof LocalPerson) {
+            LocalPerson localPerson = (LocalPerson) person;
             RemoteAccount account = new RemoteAccount(person.getPassport() + ':' + accountName);
-            person.setAccount(account);
+            localPerson.setAccount(account);
+            return localPerson;
         }
         RemotePerson remotePerson = persons.get(person.getPassport());
         RemoteAccount account;
@@ -66,6 +68,6 @@ class RemoteBank implements Bank {
             account = accountPresent;
         remotePerson.setAccount(account);
 
-        return account;
+        return remotePerson;
     }
 }

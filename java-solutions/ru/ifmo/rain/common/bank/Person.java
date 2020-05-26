@@ -34,10 +34,4 @@ public interface Person extends Remote {
      */
     Account getAccount(String accountName)
             throws RemoteException;
-
-    /**
-     * @param accountName {@link ru.ifmo.rain.konovalov.bank.RemoteAccount} - added account to person.
-     */
-    void setAccount(RemoteAccount accountName)
-            throws RemoteException;
 }

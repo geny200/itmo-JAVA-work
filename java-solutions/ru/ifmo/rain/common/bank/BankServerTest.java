@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 import org.junit.Test;
+import ru.ifmo.rain.konovalov.bank.RemoteAccount;
 
 /**
  * Tests for the server.
@@ -43,10 +44,30 @@ public class BankServerTest extends BaseTest {
     }
 
     @Test
+    public void createLocalPersonAccountAndChangeAmount() {
+        test(bank -> {
+            bank.createPerson(name, surname, passport);
+            Person localPerson = bank.createPersonAccount(accountName, bank.getLocalPerson(passport));
+            Assert.assertNotNull(localPerson.getAccount(accountName));
+            Assert.assertNull(bank.getLocalPerson(passport).getAccount(accountName));
+            Assert.assertNull(bank.getRemotePerson(passport).getAccount(accountName));
+            Assert.assertNull(bank.getAccount(passport + ':' + accountName));
+            Account account = localPerson.getAccount(accountName);
+            Assert.assertEquals(0, account.getAmount());
+            account.setAmount(500);
+            Assert.assertEquals(500, account.getAmount());
+        });
+    }
+
+    @Test
     public void createOneAccountRemotePersonAndChange() {
         test(bank -> {
             Person remotePerson = bank.createPerson(name, surname, passport);
-            bank.createPersonAccount(accountName, remotePerson);
+            Person person = bank.createPersonAccount(accountName, remotePerson);
+
+            Assert.assertNotNull(person.getAccount(accountName));
+            Assert.assertNotNull(remotePerson.getAccount(accountName));
+
             Person localPerson = bank.getLocalPerson(passport);
             Account localAccount = localPerson.getAccount(accountName);
             Account account = remotePerson.getAccount(accountName);
@@ -68,7 +89,9 @@ public class BankServerTest extends BaseTest {
             for (int i = 0; i != 100; ++i)
                 service.submit(() -> {
                     try {
-                        blockingQueue.put(bank.createPersonAccount(accountName, remotePerson));
+                        Person person = bank.createPersonAccount(accountName, remotePerson);
+                        Assert.assertNotNull(person);
+                        blockingQueue.put(person.getAccount(accountName));
                     } catch (RemoteException e) {
                         Assert.fail("RemoteException: " + e.getMessage());
                     } catch (InterruptedException e) {
@@ -80,11 +103,13 @@ public class BankServerTest extends BaseTest {
             final Person localPerson = bank.getLocalPerson(passport);
             for (int i = 0; i != 100; ++i) {
                 Account account = blockingQueue.take();
+                Assert.assertNotNull(account);
                 Assert.assertEquals(i, account.getAmount());
                 account.setAmount(i + 1);
             }
             for (int i = 0; i != 100; ++i) {
                 Account account = localPerson.getAccount(accountName);
+                Assert.assertNotNull(account);
                 Assert.assertEquals(i, account.getAmount());
                 account.setAmount(i + 1);
             }
@@ -101,7 +126,9 @@ public class BankServerTest extends BaseTest {
                 int finalI = i;
                 service.submit(() -> {
                     try {
-                        blockingQueue.put(bank.createPersonAccount(accountName + finalI, remotePerson));
+                        Person person = bank.createPersonAccount(accountName + finalI, remotePerson);
+                        //Assert.assertNotNull(person);
+                        blockingQueue.put(person.getAccount(accountName + finalI));
                     } catch (RemoteException e) {
                         Assert.fail("RemoteException: " + e.getMessage());
                     } catch (InterruptedException e) {
@@ -114,12 +141,14 @@ public class BankServerTest extends BaseTest {
             Person localPerson = bank.getLocalPerson(passport);
             for (int i = 0; i != 100; ++i) {
                 Account account = blockingQueue.take();
+                Assert.assertNotNull(account);
                 Assert.assertEquals(0, account.getAmount());
                 account.setAmount(i + 1);
             }
 
             for (int i = 0; i != 100; ++i) {
                 Account account = localPerson.getAccount(accountName + i);
+                Assert.assertNotNull(account);
                 Assert.assertEquals(0, account.getAmount());
                 account.setAmount(i + 1);
             }
@@ -210,7 +239,8 @@ public class BankServerTest extends BaseTest {
             int amount = 500;
             bank.createPerson(name, surname, passport);
             Person remotePerson = bank.getRemotePerson(passport);
-            Account account = bank.createPersonAccount(accountName, remotePerson);
+            Account account = bank.createPersonAccount(accountName, remotePerson).getAccount(accountName);
+            Assert.assertNotNull(account);
             Person localPerson = bank.getLocalPerson(passport);
             account.setAmount(amount);
             Assert.assertEquals(remotePerson.getAccount(accountName).getAmount(), amount);
@@ -224,7 +254,8 @@ public class BankServerTest extends BaseTest {
             int amount = 500;
             bank.createPerson(name, surname, passport);
             Person remotePerson = bank.getRemotePerson(passport);
-            Account account = bank.createPersonAccount(accountName, remotePerson);
+            Account account = bank.createPersonAccount(accountName, remotePerson).getAccount(accountName);
+            Assert.assertNotNull(account);
             account.setAmount(amount);
             Person localPerson = bank.getLocalPerson(passport);
             Assert.assertEquals(remotePerson.getAccount(accountName).getAmount(), amount);
@@ -262,7 +293,11 @@ public class BankServerTest extends BaseTest {
             for (int i = 0; i < countOfPersons; i++) {
                 Person remotePerson = bank.createPerson(name + i, surname + i, passport + i);
                 for (int j = 0; j < countOfAccount; j++) {
-                    set[j].add(bank.createPersonAccount(accountName + j, remotePerson));
+                    Person person = bank.createPersonAccount(accountName + j, remotePerson);
+                    Assert.assertNotNull(person);
+                    Assert.assertNotNull(person.getAccount(accountName + j));
+                    Assert.assertNotNull(remotePerson.getAccount(accountName + j));
+                    set[j].add(remotePerson.getAccount(accountName + j));
                 }
             }
             for (int i = 0; i < countOfAccount; i++) {

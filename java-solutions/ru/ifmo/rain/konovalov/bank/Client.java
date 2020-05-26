@@ -42,7 +42,7 @@ public class Client implements BankClient {
         Person person = bank.createPerson(name, surname, passport);
         if (!name.equals(person.getName()) || !surname.equals(person.getSurname()))
             return 0;
-        Account account = bank.createPersonAccount(accountName, person);
+        Account account = bank.createPersonAccount(accountName, person).getAccount(accountName);
         account.setAmount(account.getAmount() + Integer.parseInt(modification));
         return account.getAmount();
     }

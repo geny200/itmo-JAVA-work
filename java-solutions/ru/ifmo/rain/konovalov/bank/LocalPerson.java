@@ -41,7 +41,6 @@ public class LocalPerson implements Person, Serializable {
         return accounts.get(passport + ':' + accountName);
     }
 
-    @Override
     public void setAccount(RemoteAccount account) {
         LocalAccount localAccount = account.getLocalAccount();
         accounts.put(localAccount.getId(), localAccount);

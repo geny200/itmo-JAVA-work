@@ -1,4 +1,4 @@
-package ru.ifmo.rain.common.bank;
+package ru.ifmo.rain.konovalov.bank;
 
 import java.rmi.RemoteException;
 
@@ -7,14 +7,14 @@ import java.rmi.RemoteException;
  *
  * @author Eugene Geny200
  * @see java.lang.AutoCloseable
- * @see ru.ifmo.rain.common.bank.Bank
+ * @see Bank
  */
 public interface BankClient extends AutoCloseable {
     /**
-     * Creates an instance of the interface {@link ru.ifmo.rain.common.bank.Bank} and opens RMI on port.
+     * Creates an instance of the interface {@link Bank} and opens RMI on port.
      *
      * @param port - port for RMI.
-     * @see ru.ifmo.rain.common.bank.Bank
+     * @see Bank
      */
     void start(int port);
 
@@ -27,8 +27,8 @@ public interface BankClient extends AutoCloseable {
      * @param accountName  {@link java.lang.String} - person account id.
      * @param modification {@link java.lang.String} - change in invoice amount.
      * @return - returns the amount of money in a person’s account.
-     * @see ru.ifmo.rain.common.bank.Person
-     * @see ru.ifmo.rain.common.bank.Account
+     * @see Person
+     * @see Account
      */
     int change(String name, String surname, String passport, String accountName, String modification) throws RemoteException;
 

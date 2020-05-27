@@ -1,7 +1,5 @@
 package ru.ifmo.rain.konovalov.bank;
 
-import ru.ifmo.rain.common.bank.Account;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 

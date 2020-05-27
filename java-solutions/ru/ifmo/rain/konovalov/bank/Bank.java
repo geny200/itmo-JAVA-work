@@ -1,4 +1,4 @@
-package ru.ifmo.rain.common.bank;
+package ru.ifmo.rain.konovalov.bank;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,7 +14,7 @@ public interface Bank extends Remote {
      * Creates an account by identifier, if it didn't exist otherwise, returns the existing one.
      *
      * @param id - account identifier
-     * @return {@link ru.ifmo.rain.common.bank.Account} - created account or existing.
+     * @return {@link Account} - created account or existing.
      */
     Account createAccount(String id)
             throws RemoteException;
@@ -23,7 +23,7 @@ public interface Bank extends Remote {
      * Finds an account by ID, if it wasn't found, returns null.
      *
      * @param id - account identifier.
-     * @return {@link ru.ifmo.rain.common.bank.Account} - account or null.
+     * @return {@link Account} - account or null.
      */
     Account getAccount(String id)
             throws RemoteException;
@@ -32,8 +32,8 @@ public interface Bank extends Remote {
      * Create an account for a person if it didn't exist.
      *
      * @param accountName  - account identifier.
-     * @param remotePerson {@link ru.ifmo.rain.common.bank.Account} - person.
-     * @return {@link ru.ifmo.rain.common.bank.Person} - person with an added account if it did not exist.
+     * @param remotePerson {@link Account} - person.
+     * @return {@link Person} - person with an added account if it did not exist.
      */
     Person createPersonAccount(String accountName, Person remotePerson)
             throws RemoteException;
@@ -44,7 +44,7 @@ public interface Bank extends Remote {
      * @param name     {@link java.lang.String} - first name of a person.
      * @param surname  {@link java.lang.String} - last name of a person.
      * @param passport {@link java.lang.String} - passport of a person.
-     * @return {@link ru.ifmo.rain.common.bank.Person} - created RemotePerson or existing.
+     * @return {@link Person} - created RemotePerson or existing.
      */
     Person createPerson(String name, String surname, String passport)
             throws RemoteException;
@@ -53,7 +53,7 @@ public interface Bank extends Remote {
      * Finds a person on the passport, otherwise returns null.
      *
      * @param passport {@link java.lang.String} - passport of a person.]
-     * @return {@link ru.ifmo.rain.common.bank.Person} - found LocalPerson or null.
+     * @return {@link Person} - found LocalPerson or null.
      */
     Person getLocalPerson(String passport)
             throws RemoteException;
@@ -62,7 +62,7 @@ public interface Bank extends Remote {
      * Finds a person on the passport, otherwise returns null.
      *
      * @param passport {@link java.lang.String} - passport of a person.]
-     * @return {@link ru.ifmo.rain.common.bank.Person} - found RemotePerson or null.
+     * @return {@link Person} - found RemotePerson or null.
      */
     Person getRemotePerson(String passport)
             throws RemoteException;

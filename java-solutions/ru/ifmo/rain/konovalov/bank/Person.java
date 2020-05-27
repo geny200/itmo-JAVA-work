@@ -1,6 +1,4 @@
-package ru.ifmo.rain.common.bank;
-
-import ru.ifmo.rain.konovalov.bank.RemoteAccount;
+package ru.ifmo.rain.konovalov.bank;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -30,7 +28,7 @@ public interface Person extends Remote {
             throws RemoteException;
 
     /**
-     * @return {@link ru.ifmo.rain.common.bank.Account} - person account.
+     * @return {@link Account} - person account.
      */
     Account getAccount(String accountName)
             throws RemoteException;

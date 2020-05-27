@@ -1,4 +1,4 @@
-package ru.ifmo.rain.common.bank;
+package ru.ifmo.rain.konovalov.bank;
 
 /**
  * @author Eugene Geny200
@@ -6,10 +6,10 @@ package ru.ifmo.rain.common.bank;
  */
 public interface BankServer extends AutoCloseable {
     /**
-     * Creates an instance of the interface {@link ru.ifmo.rain.common.bank.Bank} and opens RMI on port.
+     * Creates an instance of the interface {@link Bank} and opens RMI on port.
      *
      * @param port - port for RMI.
-     * @see ru.ifmo.rain.common.bank.Bank
+     * @see Bank
      */
     void start(int port);
 

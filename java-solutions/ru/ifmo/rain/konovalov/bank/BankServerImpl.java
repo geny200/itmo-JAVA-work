@@ -30,8 +30,6 @@ public class BankServerImpl implements BankServer {
             Bank stub = (Bank) UnicastRemoteObject.exportObject(bank, 0);
             registry = LocateRegistry.createRegistry(port);
             registry.rebind("//localhost/bank", stub);
-            //UnicastRemoteObject.exportObject(bank);
-            //Naming.rebind("//localhost/bank", stub);
         } catch (RemoteException e) {
             startFlag.set(false);
             e.printStackTrace();

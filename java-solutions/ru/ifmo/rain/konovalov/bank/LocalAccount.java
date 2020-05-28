@@ -1,5 +1,7 @@
 package ru.ifmo.rain.konovalov.bank;
 
+import ru.ifmo.test.common.bank.Account;
+
 import java.io.Serializable;
 
 class LocalAccount implements Account, Serializable {

@@ -1,4 +1,4 @@
-package ru.ifmo.rain.konovalov.bank;
+package ru.ifmo.test.common.bank;
 
 /**
  * @author Eugene Geny200

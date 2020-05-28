@@ -1,5 +1,8 @@
 package ru.ifmo.rain.konovalov.bank;
 
+import ru.ifmo.test.common.bank.Bank;
+import ru.ifmo.test.common.bank.BankServer;
+
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

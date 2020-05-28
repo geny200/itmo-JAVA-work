@@ -1,5 +1,10 @@
 package ru.ifmo.rain.konovalov.bank;
 
+import ru.ifmo.test.common.bank.Account;
+import ru.ifmo.test.common.bank.Bank;
+import ru.ifmo.test.common.bank.BankClient;
+import ru.ifmo.test.common.bank.Person;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

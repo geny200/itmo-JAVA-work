@@ -1,5 +1,8 @@
 package ru.ifmo.rain.konovalov.bank;
 
+import ru.ifmo.test.common.bank.Account;
+import ru.ifmo.test.common.bank.Person;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.stream.Stream;

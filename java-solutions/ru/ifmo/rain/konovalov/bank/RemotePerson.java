@@ -13,6 +13,9 @@ public class RemotePerson extends UnicastRemoteObject implements Person {
     private final String surname;
     private final String passport;
 
+    /**
+     * Construct a new RemotePerson.
+     */
     public RemotePerson(String name, String surname, String passport) throws RemoteException {
         super();
         this.name = name;
@@ -21,31 +24,44 @@ public class RemotePerson extends UnicastRemoteObject implements Person {
         this.accounts = new ConcurrentHashMap<>();
     }
 
+    /**
+     * @return {@link String} - last name of a person.
+     */
     @Override
     public String getSurname() {
         return surname;
     }
 
+    /**
+     * @return {@link String} - passport of a person.
+     */
     @Override
     public String getPassport() {
         return passport;
     }
 
+    /**
+     * @return {@link String} - first name of a person.
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * @param accountName - account identifier
+     * @return {@link Account} - person account.
+     */
     @Override
     public Account getAccount(String accountName) {
         return accounts.get(passport + ':' + accountName);
     }
 
-    public void setAccount(RemoteAccount account) {
+    protected void setAccount(RemoteAccount account) {
         accounts.putIfAbsent(account.getId(), account);
     }
 
-    LocalPerson getLocalPerson() {
+    protected LocalPerson getLocalPerson() {
         return new LocalPerson(name, surname, passport, accounts.values().stream());
     }
 }

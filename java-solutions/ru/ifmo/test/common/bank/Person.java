@@ -28,6 +28,7 @@ public interface Person extends Remote {
             throws RemoteException;
 
     /**
+     * @param accountName - account identifier
      * @return {@link Account} - person account.
      */
     Account getAccount(String accountName)

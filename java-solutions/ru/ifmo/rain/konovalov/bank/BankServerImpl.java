@@ -15,10 +15,21 @@ public class BankServerImpl implements BankServer {
     private Bank bank;
     Registry registry;
 
+    /**
+     * Constructs a new HelloUDPNonblockingServer.
+     */
     public BankServerImpl() {
         this.startFlag = new AtomicBoolean();
     }
 
+
+    /**
+     * Creates an instance of the interface {@link Bank} and opens RMI on port.
+     *
+     * @param port - port for RMI.
+     * @see Bank
+     */
+    @Override
     public void start(int port) {
         if (port <= 1023)
             throw new IllegalArgumentException("Ports less than 1023 are reserved");
@@ -37,6 +48,9 @@ public class BankServerImpl implements BankServer {
         }
     }
 
+    /**
+     * Stops server and deallocate all resources.
+     */
     @Override
     public void close() {
         if (registry != null) {
@@ -50,4 +64,6 @@ public class BankServerImpl implements BankServer {
             bank = null;
         }
     }
+
+
 }

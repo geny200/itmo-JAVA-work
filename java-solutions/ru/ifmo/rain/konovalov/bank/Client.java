@@ -16,10 +16,20 @@ public class Client implements BankClient {
     private Bank bank;
     private final AtomicBoolean startFlag;
 
+    /**
+     * Construct a new Client.
+     */
     public Client() {
         this.startFlag = new AtomicBoolean();
     }
 
+    /**
+     * Creates an instance of the interface {@link Bank} and opens RMI on port.
+     *
+     * @param port - port for RMI.
+     * @see Bank
+     */
+    @Override
     public void start(int port) {
         if (port <= 1023)
             throw new IllegalArgumentException("Ports less than 1023 are reserved");
@@ -37,6 +47,18 @@ public class Client implements BankClient {
         }
     }
 
+    /**
+     * Change the amount of the account and returns a new amount.
+     *
+     * @param name         {@link String} - first name of a person.
+     * @param surname      {@link String} - last name of a person.
+     * @param passport     {@link String} - passport of a person.
+     * @param accountName  {@link String} - person account id.
+     * @param modification {@link String} - change in invoice amount.
+     * @return - returns the amount of money in a person’s account.
+     * @see Person
+     * @see Account
+     */
     @Override
     public int change(String name, String surname, String passport, String accountName, String modification) throws RemoteException {
         Person person = bank.createPerson(name, surname, passport);
@@ -46,6 +68,16 @@ public class Client implements BankClient {
         account.setAmount(account.getAmount() + Integer.parseInt(modification));
         return account.getAmount();
     }
+
+    /**
+     * Stops server and deallocate all resources.
+     */
+    @Override
+    public void close() {
+        bank = null;
+        bankServer.close();
+    }
+
 
     public static void main(String[] args) {
         if (args == null || args.length != 5) {
@@ -67,9 +99,5 @@ public class Client implements BankClient {
         }
     }
 
-    @Override
-    public void close() {
-        bank = null;
-        bankServer.close();
-    }
+
 }

@@ -32,10 +32,10 @@ public interface Bank extends Remote {
      * Create an account for a person if it didn't exist.
      *
      * @param accountName  - account identifier.
-     * @param remotePerson {@link Account} - person.
+     * @param person {@link Account} - person.
      * @return {@link Person} - person with an added account if it did not exist.
      */
-    Person createPersonAccount(String accountName, Person remotePerson)
+    Person createPersonAccount(String accountName, Person person)
             throws RemoteException;
 
     /**

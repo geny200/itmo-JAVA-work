@@ -11,6 +11,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * You can download test to this class from GitHub <a href="https://github.com/geny200/itmo-bank-test">GitHub</a>
+ *
+ * @author Eugene (Geny200)
+ * @see ru.ifmo.test.common.bank.BankClient
+ */
 public class Client implements BankClient {
     private BankServerImpl bankServer;
     private Bank bank;

@@ -5,6 +5,10 @@ import ru.ifmo.test.common.bank.Account;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * @author Eugene Geny200
+ * @see ru.ifmo.test.common.bank.Person
+ */
 public class RemoteAccount extends UnicastRemoteObject implements Account {
     private final String id;
     private int amount;

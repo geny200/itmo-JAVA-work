@@ -4,10 +4,13 @@ import ru.ifmo.test.common.bank.Account;
 import ru.ifmo.test.common.bank.Person;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+/**
+ * @author Eugene Geny200
+ * @see ru.ifmo.test.common.bank.Person
+ */
 public class LocalPerson implements Person, Serializable {
     private final HashMap<String, LocalAccount> accounts;
     private final String name;

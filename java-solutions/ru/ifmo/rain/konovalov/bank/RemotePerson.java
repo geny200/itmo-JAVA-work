@@ -7,6 +7,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author Eugene Geny200
+ * @see ru.ifmo.test.common.bank.Person
+ */
 public class RemotePerson extends UnicastRemoteObject implements Person {
     private final ConcurrentHashMap<String, RemoteAccount> accounts;
     private final String name;

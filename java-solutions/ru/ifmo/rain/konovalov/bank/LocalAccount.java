@@ -3,8 +3,11 @@ package ru.ifmo.rain.konovalov.bank;
 import ru.ifmo.test.common.bank.Account;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 
+/**
+ * @author Eugene Geny200
+ * @see ru.ifmo.test.common.bank.Person
+ */
 class LocalAccount implements Account, Serializable {
     private final String id;
     private int amount;

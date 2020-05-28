@@ -7,6 +7,10 @@ import ru.ifmo.test.common.bank.Person;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author Eugene Geny200
+ * @see ru.ifmo.test.common.bank.Bank
+ */
 class RemoteBank implements Bank {
     private final ConcurrentHashMap<String, RemoteAccount> accounts;
     private final ConcurrentHashMap<String, RemotePerson> persons;

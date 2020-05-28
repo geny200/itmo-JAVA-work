@@ -10,6 +10,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * You can download test to this class from GitHub <a href="https://github.com/geny200/itmo-bank-test">GitHub</a>
+ *
+ * @author Eugene (Geny200)
+ * @see ru.ifmo.test.common.bank.BankServer
+ */
 public class BankServerImpl implements BankServer {
     AtomicBoolean startFlag;
     private Bank bank;

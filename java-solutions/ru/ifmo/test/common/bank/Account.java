@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
  */
 public interface Account extends Remote {
     /**
-     * @return {@link java.lang.String} - account identifier
+     * @return {@link String} - account identifier
      */
     String getId() throws RemoteException;
 

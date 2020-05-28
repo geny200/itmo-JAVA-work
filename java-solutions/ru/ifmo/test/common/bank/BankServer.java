@@ -2,7 +2,7 @@ package ru.ifmo.test.common.bank;
 
 /**
  * @author Eugene Geny200
- * @see java.lang.AutoCloseable
+ * @see AutoCloseable
  */
 public interface BankServer extends AutoCloseable {
     /**

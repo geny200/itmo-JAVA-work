@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
  * Client for Bank
  *
  * @author Eugene Geny200
- * @see java.lang.AutoCloseable
+ * @see AutoCloseable
  * @see Bank
  */
 public interface BankClient extends AutoCloseable {
@@ -21,11 +21,11 @@ public interface BankClient extends AutoCloseable {
     /**
      * Change the amount of the account and returns a new amount.
      *
-     * @param name         {@link java.lang.String} - first name of a person.
-     * @param surname      {@link java.lang.String} - last name of a person.
-     * @param passport     {@link java.lang.String} - passport of a person.
-     * @param accountName  {@link java.lang.String} - person account id.
-     * @param modification {@link java.lang.String} - change in invoice amount.
+     * @param name         {@link String} - first name of a person.
+     * @param surname      {@link String} - last name of a person.
+     * @param passport     {@link String} - passport of a person.
+     * @param accountName  {@link String} - person account id.
+     * @param modification {@link String} - change in invoice amount.
      * @return - returns the amount of money in a person’s account.
      * @see Person
      * @see Account

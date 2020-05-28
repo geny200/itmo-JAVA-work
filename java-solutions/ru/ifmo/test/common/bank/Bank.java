@@ -41,9 +41,9 @@ public interface Bank extends Remote {
     /**
      * Creates a record of a person if he didn't exist and returns it, otherwise returns the existing one returns. (passport is a unique key)
      *
-     * @param name     {@link java.lang.String} - first name of a person.
-     * @param surname  {@link java.lang.String} - last name of a person.
-     * @param passport {@link java.lang.String} - passport of a person.
+     * @param name     {@link String} - first name of a person.
+     * @param surname  {@link String} - last name of a person.
+     * @param passport {@link String} - passport of a person.
      * @return {@link Person} - created RemotePerson or existing.
      */
     Person createPerson(String name, String surname, String passport)
@@ -52,7 +52,7 @@ public interface Bank extends Remote {
     /**
      * Finds a person on the passport, otherwise returns null.
      *
-     * @param passport {@link java.lang.String} - passport of a person.]
+     * @param passport {@link String} - passport of a person.]
      * @return {@link Person} - found LocalPerson or null.
      */
     Person getLocalPerson(String passport)
@@ -61,7 +61,7 @@ public interface Bank extends Remote {
     /**
      * Finds a person on the passport, otherwise returns null.
      *
-     * @param passport {@link java.lang.String} - passport of a person.]
+     * @param passport {@link String} - passport of a person.]
      * @return {@link Person} - found RemotePerson or null.
      */
     Person getRemotePerson(String passport)

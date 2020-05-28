@@ -40,11 +40,14 @@ public class BankServerImpl implements BankServer {
     @Override
     public void close() {
         if (registry != null) {
+            startFlag.set(false);
             try {
-                UnicastRemoteObject.unexportObject(registry, true);
+                UnicastRemoteObject.unexportObject(bank, false);
+                UnicastRemoteObject.unexportObject(registry, false);
             } catch (NoSuchObjectException ignore) {
 
             }
+            bank = null;
         }
     }
 }

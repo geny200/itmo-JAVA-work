@@ -10,19 +10,19 @@ import java.rmi.RemoteException;
 public interface Person extends Remote {
 
     /**
-     * @return {@link java.lang.String} - last name of a person.
+     * @return {@link String} - last name of a person.
      */
     String getSurname()
             throws RemoteException;
 
     /**
-     * @return {@link java.lang.String} - passport of a person.
+     * @return {@link String} - passport of a person.
      */
     String getPassport()
             throws RemoteException;
 
     /**
-     * @return {@link java.lang.String} - first name of a person.
+     * @return {@link String} - first name of a person.
      */
     String getName()
             throws RemoteException;

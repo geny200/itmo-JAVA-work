@@ -62,8 +62,8 @@ public class BankServerImpl implements BankServer {
         if (registry != null) {
             startFlag.set(false);
             try {
-                UnicastRemoteObject.unexportObject(bank, false);
-                UnicastRemoteObject.unexportObject(registry, false);
+                UnicastRemoteObject.unexportObject(bank, true);
+                UnicastRemoteObject.unexportObject(registry, true);
             } catch (NoSuchObjectException ignore) {
 
             }

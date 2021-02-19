@@ -151,7 +151,7 @@ public class MakeStatistics {
                 this::testCurrency,
                 number -> {
                     if (number != null)
-                        return NumberFormat.getCurrencyInstance(outPut).format(number);
+                        return NumberFormat.getCurrencyInstance(locale).format(number);
                     return "";
                 });
     }

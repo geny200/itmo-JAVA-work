@@ -1,7 +1,7 @@
 package ru.ifmo.rain.konovalov.hello;
 
 import info.kgeorgiy.java.advanced.hello.HelloServer;
-//"C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.1\jbr\bin\java.exe" -cp . -p . -m info.kgeorgiy.java.advanced.hello server ru.ifmo.rain.konovalov.hello.HelloUDPServer
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
